@@ -21,7 +21,7 @@ autocmd({ "BufRead", "BufNewFile" }, {
   end,
 })
 
--- Persist Git Conflict Highlights across theme reloads and sessions
+-- Persist Git Conflict Highlights and CursorLine across theme reloads and sessions
 autocmd({ "ColorScheme", "UIEnter", "SessionLoadPost" }, {
   callback = function()
     vim.api.nvim_set_hl(0, "GitConflictCurrent", { bg = "#2b5643", default = false })
@@ -30,5 +30,8 @@ autocmd({ "ColorScheme", "UIEnter", "SessionLoadPost" }, {
     vim.api.nvim_set_hl(0, "GitConflictIncomingLabel", { bg = "#1f3b5c", default = false })
     vim.api.nvim_set_hl(0, "GitConflictAncestor", { bg = "#512c40", default = false })
     vim.api.nvim_set_hl(0, "GitConflictAncestorLabel", { bg = "#512c40", default = false })
+    
+    -- Force CursorLine to be a slightly lighter grey than the background, exactly like VSCode
+    vim.api.nvim_set_hl(0, "CursorLine", { bg = "#37373D", default = false })
   end,
 })

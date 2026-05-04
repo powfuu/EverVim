@@ -32,6 +32,10 @@ map("n", "<C-M-w>", "<cmd> close <cr>", { desc = "Close window split" })
 map("n", "<D-M-w>", "<cmd> close <cr>", { desc = "Close window split" })
 map("n", "∑", "<cmd> close <cr>", { desc = "Close window split (Mac Alt+W)" })
 
+-- Quit All (Ctrl+Q / Cmd+Q)
+map({ "n", "i", "v" }, "<C-q>", "<cmd> qa <cr>", { desc = "Quit All" })
+map({ "n", "i", "v" }, "<D-q>", "<cmd> qa <cr>", { desc = "Quit All" })
+
 -- Explorer / File Tree (Ctrl+B / Cmd+B)
 map("n", "<C-b>", "<cmd> NvimTreeToggle <cr>", { desc = "Toggle Explorer" })
 map("n", "<D-b>", "<cmd> NvimTreeToggle <cr>", { desc = "Toggle Explorer" })
