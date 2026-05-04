@@ -68,4 +68,15 @@ M.ui = {
   },
 }
 
+M.term = {
+  float = {
+    relative = "editor",
+    row = 0.1,
+    col = 0.05,
+    width = 0.9,
+    height = 0.8,
+    border = "single",
+  },
+}
+
 return M
