@@ -18,3 +18,14 @@ o.timeoutlen = 300      -- Faster mapping resolution
 o.pumblend = 10         -- Slight transparency in popup menus (autocomplete) for a sleek modern feel
 o.winblend = 10         -- Slight transparency in floating windows
 o.smoothscroll = true   -- Enable Neovim 0.10 native smooth scrolling for half-pages
+
+-- ==========================================
+-- Cursor & Viewport (VSCode Style)
+-- ==========================================
+o.scrolloff = 15        -- editor.cursorSurroundingLines: 15 (Keep 15 lines of context around the cursor)
+
+-- editor.cursorStyle: "underline" & editor.cursorBlinking: "phase"
+-- n-v-c-sm:block (Normal/Visual: Block)
+-- i-ci-ve:hor20 (Insert: Underline 20% height, with blinking)
+-- r-cr-o:hor20 (Replace: Underline)
+o.guicursor = "n-v-c-sm:block,i-ci-ve:hor20-blinkwait300-blinkon200-blinkoff150,r-cr-o:hor20"
