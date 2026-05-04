@@ -32,6 +32,9 @@ autocmd({ "ColorScheme", "UIEnter", "SessionLoadPost" }, {
     vim.api.nvim_set_hl(0, "GitConflictAncestorLabel", { bg = "#512c40", default = false })
     
     -- Force CursorLine to be a slightly lighter grey than the background, exactly like VSCode
-    vim.api.nvim_set_hl(0, "CursorLine", { bg = "#37373D", default = false })
+    -- We must ensure the 'clear' flag is set or the existing base46 transparency might interfere
+    vim.api.nvim_set_hl(0, "CursorLine", { bg = "#2a2d2e", default = false })
+    -- NvChad also has a CursorLineNr for the number itself
+    vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#ffffff", bold = true, default = false })
   end,
 })
