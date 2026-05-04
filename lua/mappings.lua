@@ -31,16 +31,42 @@ map("n", "<C-b>", "<cmd> NvimTreeToggle <cr>", { desc = "Toggle Explorer" })
 map("n", "<D-b>", "<cmd> NvimTreeToggle <cr>", { desc = "Toggle Explorer" })
 
 -- Find files (Ctrl+P / Cmd+P)
-map("n", "<C-p>", "<cmd> Telescope find_files <cr>", { desc = "Find files" })
-map("n", "<D-p>", "<cmd> Telescope find_files <cr>", { desc = "Find files" })
+map("n", "<C-p>", function()
+  require("telescope.builtin").find_files({
+    hidden = true,
+    file_ignore_patterns = { "node_modules/", "%.git/", "%.claude/" }
+  })
+end, { desc = "Find files (including hidden, excluding node_modules/.git/.claude)" })
+
+map("n", "<D-p>", function()
+  require("telescope.builtin").find_files({
+    hidden = true,
+    file_ignore_patterns = { "node_modules/", "%.git/", "%.claude/" }
+  })
+end, { desc = "Find files (including hidden, excluding node_modules/.git/.claude)" })
 
 -- Command Palette (Ctrl+Shift+P / Cmd+Shift+P)
 map("n", "<C-S-P>", "<cmd> Telescope commands <cr>", { desc = "Command Palette" })
 map("n", "<D-S-p>", "<cmd> Telescope commands <cr>", { desc = "Command Palette" })
 
 -- Search in Files (Ctrl+Shift+F / Cmd+Shift+F)
-map("n", "<C-S-F>", "<cmd> Telescope live_grep <cr>", { desc = "Search in files" })
-map("n", "<D-S-f>", "<cmd> Telescope live_grep <cr>", { desc = "Search in files" })
+map("n", "<C-S-F>", function()
+  require("telescope.builtin").live_grep({
+    additional_args = function()
+      return { "--hidden" } -- Removed --no-ignore so it respects .gitignore again
+    end,
+    file_ignore_patterns = { "node_modules/", "%.git/", "%.claude/" }
+  })
+end, { desc = "Search in files (including hidden, excluding node_modules/.git/.claude)" })
+
+map("n", "<D-S-f>", function()
+  require("telescope.builtin").live_grep({
+    additional_args = function()
+      return { "--hidden" } -- Removed --no-ignore so it respects .gitignore again
+    end,
+    file_ignore_patterns = { "node_modules/", "%.git/", "%.claude/" }
+  })
+end, { desc = "Search in files (including hidden, excluding node_modules/.git/.claude)" })
 
 -- Find in current file (Ctrl+F / Cmd+F)
 map("n", "<C-f>", "<cmd> Telescope current_buffer_fuzzy_find <cr>", { desc = "Find in file" })
@@ -62,13 +88,12 @@ map("v", "<C-/>", "gc", { desc = "Toggle Comment", remap = true })
 map("n", "<D-/>", "gcc", { desc = "Toggle Comment", remap = true })
 map("v", "<D-/>", "gc", { desc = "Toggle Comment", remap = true })
 
--- Toggle Terminal (ctrl+m / cmd+m)
--- (El modo "t" de ctrl+m está desactivado porque ctrl+m es el mismo código que 'Enter' en las terminales)
-map({ "n" }, "<c-m>", function()
+-- Toggle Terminal (ctrl+n / cmd+n)
+map({ "n", "t" }, "<C-n>", function()
   require("nvchad.term").toggle { pos = "float", id = "floatTerm" }
 end, { desc = "Toggle Terminal" })
 
-map({ "n", "t" }, "<d-m>", function()
+map({ "n", "t" }, "<D-n>", function()
   require("nvchad.term").toggle { pos = "float", id = "floatTerm" }
 end, { desc = "Toggle Terminal" })
 
@@ -82,6 +107,17 @@ map("n", "<leader>xw", "<cmd> Trouble diagnostics toggle filter.buf=0 <cr>", { d
 
 -- Todo Search
 map("n", "<leader>ft", "<cmd> TodoTelescope <cr>", { desc = "Find TODOs" })
+
+-- Find Git Conflicts
+map("n", "<leader>fc", "<cmd> Telescope live_grep default_text=<<<<<<<\\ HEAD <cr>", { desc = "Find Git Conflicts" })
+
+-- Git Conflict Resolution (VSCode style)
+map("n", "<leader>co", "<cmd> GitConflictChooseOurs <cr>", { desc = "Choose Ours (Current/Green)" })
+map("n", "<leader>ct", "<cmd> GitConflictChooseTheirs <cr>", { desc = "Choose Theirs (Incoming/Blue)" })
+map("n", "<leader>cb", "<cmd> GitConflictChooseBoth <cr>", { desc = "Choose Both" })
+map("n", "<leader>c0", "<cmd> GitConflictChooseNone <cr>", { desc = "Choose None" })
+map("n", "]c", "<cmd> GitConflictNextConflict <cr>", { desc = "Next Conflict" })
+map("n", "[c", "<cmd> GitConflictPrevConflict <cr>", { desc = "Previous Conflict" })
 
 -- Lazygit (Git UI)
 map("n", "<leader>gg", "<cmd> LazyGit <cr>", { desc = "LazyGit" })

@@ -20,3 +20,15 @@ autocmd({ "BufRead", "BufNewFile" }, {
     vim.treesitter.language.register("html", "jsp")
   end,
 })
+
+-- Persist Git Conflict Highlights across theme reloads and sessions
+autocmd({ "ColorScheme", "UIEnter", "SessionLoadPost" }, {
+  callback = function()
+    vim.api.nvim_set_hl(0, "GitConflictCurrent", { bg = "#2b5643", default = false })
+    vim.api.nvim_set_hl(0, "GitConflictCurrentLabel", { bg = "#2b5643", default = false })
+    vim.api.nvim_set_hl(0, "GitConflictIncoming", { bg = "#1f3b5c", default = false })
+    vim.api.nvim_set_hl(0, "GitConflictIncomingLabel", { bg = "#1f3b5c", default = false })
+    vim.api.nvim_set_hl(0, "GitConflictAncestor", { bg = "#512c40", default = false })
+    vim.api.nvim_set_hl(0, "GitConflictAncestorLabel", { bg = "#512c40", default = false })
+  end,
+})

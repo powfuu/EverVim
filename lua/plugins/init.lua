@@ -103,4 +103,76 @@ return {
       "nvim-lua/plenary.nvim",
     },
   },
+
+  -- Gitsigns: Show git blame inline like VSCode GitLens
+  {
+    "lewis6991/gitsigns.nvim",
+    opts = function(_, opts)
+      opts.current_line_blame = true
+      opts.current_line_blame_opts = {
+        virt_text = true,
+        virt_text_pos = "eol", -- 'eol' | 'overlay' | 'right_align'
+        delay = 500, -- Delay in ms before showing the blame
+        ignore_whitespace = false,
+      }
+      opts.current_line_blame_formatter = "   <author>, <author_time:%R> • <summary>"
+      return opts
+    end,
+  },
+
+  -- Git Conflict: Beautiful VSCode-like conflict resolution with background colors
+  {
+    "akinsho/git-conflict.nvim",
+    version = "*",
+    event = { "BufReadPre", "BufNewFile" }, -- Changed from VeryLazy to load reliably on session restore
+    config = function()
+      -- Define the highlight groups manually before plugin loads them
+      vim.api.nvim_set_hl(0, "GitConflictCurrent", { bg = "#2b5643", default = false })
+      vim.api.nvim_set_hl(0, "GitConflictCurrentLabel", { bg = "#2b5643", default = false })
+      vim.api.nvim_set_hl(0, "GitConflictIncoming", { bg = "#1f3b5c", default = false })
+      vim.api.nvim_set_hl(0, "GitConflictIncomingLabel", { bg = "#1f3b5c", default = false })
+      vim.api.nvim_set_hl(0, "GitConflictAncestor", { bg = "#512c40", default = false })
+      vim.api.nvim_set_hl(0, "GitConflictAncestorLabel", { bg = "#512c40", default = false })
+
+      require("git-conflict").setup({
+        default_mappings = false, -- We will set our own in mappings.lua
+        disable_diagnostics = true,
+        highlights = {
+          -- VSCode exact colors
+          current = "GitConflictCurrent",     -- HEAD (Current changes)
+          incoming = "GitConflictIncoming",   -- Develop (Incoming changes)
+          ancestor = "GitConflictAncestor",
+        }
+      })
+    end,
+  },
+
+  -- Auto Session: Automatically save and restore sessions (open tabs, splits, etc)
+  {
+    "rmagatti/auto-session",
+    lazy = false,
+    config = function()
+      require("auto-session").setup({
+        log_level = "error",
+        auto_session_suppress_dirs = { "~/", "~/Downloads", "/", "~/Documents" },
+        auto_session_enable_last_session = false,
+        auto_save_enabled = true,
+        auto_restore_enabled = true,
+        -- Ensure NvChad's NvimTree and other panels are handled properly
+        pre_save_cmds = {
+          function()
+            -- Cerrar nvim-tree si está abierto para no romper la sesión
+            pcall(vim.cmd, "NvimTreeClose")
+          end
+        },
+        post_restore_cmds = {
+          function()
+            -- En NvChad, nvim-tree se carga "lazy". 
+            -- No podemos llamar a NvimTreeOpen directamente si el plugin no se ha cargado.
+            -- Es mejor simplemente no intentar abrirlo para evitar errores.
+          end
+        }
+      })
+    end,
+  },
 }

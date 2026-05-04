@@ -8,10 +8,20 @@ local M = {}
 M.base46 = {
 	theme = "vscode_dark",
 
-	-- hl_override = {
-	-- 	Comment = { italic = true },
-	-- 	["@comment"] = { italic = true },
-	-- },
+	hl_override = {
+		TelescopeSelection = { bg = "#04395E", fg = "#FFFFFF", bold = true },
+    TelescopeSelectionCaret = { bg = "#04395E", fg = "#569CD6" },
+	},
+
+  hl_add = {
+    -- VSCode exact conflict colors
+    GitConflictCurrent = { bg = "#2b5643" },   -- Green for HEAD (Current Changes)
+    GitConflictCurrentLabel = { bg = "#2b5643" },
+    GitConflictIncoming = { bg = "#1f3b5c" },  -- Blue for Develop (Incoming Changes)
+    GitConflictIncomingLabel = { bg = "#1f3b5c" },
+    GitConflictAncestor = { bg = "#512c40" },
+    GitConflictAncestorLabel = { bg = "#512c40" },
+  }
 }
 
 M.nvdash = {
