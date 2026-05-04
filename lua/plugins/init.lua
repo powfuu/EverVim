@@ -98,6 +98,36 @@ return {
     },
   },
 
+  -- Fine Cmdline: Beautiful centered command line without the lag of Noice
+  {
+    "VonHeikemen/fine-cmdline.nvim",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+    },
+    opts = {
+      cmdline = {
+        enable_keymaps = true,
+        smart_history = true,
+        prompt = ": ",
+      },
+      popup = {
+        position = {
+          row = "30%",
+          col = "50%",
+        },
+        size = {
+          width = "60%",
+        },
+        border = {
+          style = "rounded",
+        },
+        win_options = {
+          winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+        },
+      },
+    },
+  },
+
   -- Trouble: A pretty diagnostics, references, telescope results, quickfix and location list
   {
     "folke/trouble.nvim",

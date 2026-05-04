@@ -2,12 +2,20 @@ require "nvchad.mappings"
 
 local map = vim.keymap.set
 
-map("n", ";", ":", { desc = "CMD enter command mode" })
+-- Beautiful Centered Command Line (FineCmdline)
+map("n", ":", "<cmd>FineCmdline<CR>", { desc = "CMD enter command mode (Centered)" })
+map("n", ";", "<cmd>FineCmdline<CR>", { desc = "CMD enter command mode (Centered)" })
+
 -- Removed the "jk" to "<ESC>" mapping because it causes lag when typing the letter 'j'
 
 -- ==========================================
 -- VSCode / Trae IDE Keybindings
 -- ==========================================
+
+-- System Clipboard Copy / Paste (Cmd+C / Cmd+V)
+map({ "n", "v", "x" }, "<D-c>", '"+y', { desc = "Copy to system clipboard" })
+map({ "n", "v" }, "<D-v>", '"+p', { desc = "Paste from system clipboard" })
+map({ "i", "c" }, "<D-v>", "<C-r>+", { desc = "Paste from system clipboard" })
 
 -- Save file without formatting (Ctrl+S / Cmd+S)
 map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>", { desc = "Save file (no format)" })
