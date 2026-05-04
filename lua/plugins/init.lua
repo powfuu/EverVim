@@ -55,8 +55,20 @@ return {
       local cmp = require("cmp")
       opts.mapping["<Up>"] = cmp.mapping.select_prev_item()
       opts.mapping["<Down>"] = cmp.mapping.select_next_item()
-      -- NvChad already uses <CR> (Enter) to accept completions,
-      -- so we just make sure Up/Down arrow keys work like VSCode
+      
+      -- Smooth out the completion experience
+      opts.performance = {
+        debounce = 0, -- Trigger completion instantly
+        throttle = 0, -- Render completion instantly
+        fetching_timeout = 50,
+      }
+      
+      -- Add smooth ghost text
+      opts.experimental = {
+        ghost_text = {
+          hl_group = "CmpGhostText",
+        },
+      }
     end,
   },
 
@@ -91,6 +103,23 @@ return {
       trailing_stiffness = 0.5,
       distance_stop_animating = 0.5,
     },
+  },
+
+  -- Noice: Highly experimental ultra-smooth UI for messages, cmdline and popupmenu
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    opts = {
+      -- add any options here
+    },
+    dependencies = {
+      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+      "MunifTanjim/nui.nvim",
+      -- OPTIONAL:
+      --   `nvim-notify` is only needed, if you want to use the notification view.
+      --   If not available, we use `mini` as the fallback
+      "rcarriga/nvim-notify",
+    }
   },
 
   -- Trouble: A pretty diagnostics, references, telescope results, quickfix and location list
