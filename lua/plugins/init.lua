@@ -101,6 +101,10 @@ return {
   -- Fine Cmdline: Beautiful centered command line without the lag of Noice
   {
     "VonHeikemen/fine-cmdline.nvim",
+    keys = {
+      { ":", "<cmd>FineCmdline<CR>", mode = "n", desc = "CMD enter command mode (Centered)" },
+      { ";", "<cmd>FineCmdline<CR>", mode = "n", desc = "CMD enter command mode (Centered)" },
+    },
     dependencies = {
       "MunifTanjim/nui.nvim",
     },
