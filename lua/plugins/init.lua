@@ -69,6 +69,16 @@ return {
   -- EverVim IDE Essential Plugins
   -- ==========================================
 
+  -- Override NvimTree to add relative numbers
+  {
+    "nvim-tree/nvim-tree.lua",
+    opts = {
+      view = {
+        relativenumber = true,
+      },
+    },
+  },
+
   -- Telescope: Customize default search behavior
   {
     "nvim-telescope/telescope.nvim",

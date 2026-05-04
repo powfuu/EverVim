@@ -10,10 +10,20 @@ local map = vim.keymap.set
 -- VSCode / Trae IDE Keybindings
 -- ==========================================
 
--- System Clipboard Copy / Paste (Cmd+C / Cmd+V)
-map({ "n", "v", "x" }, "<D-c>", '"+y', { desc = "Copy to system clipboard" })
+-- System Clipboard Copy / Paste (Cmd+C / Cmd+V / Ctrl+C / Ctrl+V)
+-- In Visual mode, copy the selection
+map("v", "<D-c>", '"+y', { desc = "Copy selection to system clipboard" })
+map("v", "<C-c>", '"+y', { desc = "Copy selection to system clipboard" })
+
+-- In Normal mode, copy the current line (VSCode behavior)
+map("n", "<D-c>", '"+yy', { desc = "Copy line to system clipboard" })
+map("n", "<C-c>", '"+yy', { desc = "Copy line to system clipboard" })
+
+-- Paste from system clipboard
 map({ "n", "v" }, "<D-v>", '"+p', { desc = "Paste from system clipboard" })
+map({ "n", "v" }, "<C-v>", '"+p', { desc = "Paste from system clipboard" })
 map({ "i", "c" }, "<D-v>", "<C-r>+", { desc = "Paste from system clipboard" })
+map({ "i", "c" }, "<C-v>", "<C-r>+", { desc = "Paste from system clipboard" })
 
 -- Save file without formatting (Ctrl+S / Cmd+S)
 map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>", { desc = "Save file (no format)" })
@@ -43,8 +53,13 @@ map({ "n", "i", "v" }, "<C-q>", "<cmd> qa <cr>", { desc = "Quit All" })
 map({ "n", "i", "v" }, "<D-q>", "<cmd> qa <cr>", { desc = "Quit All" })
 
 -- Explorer / File Tree (Ctrl+B / Cmd+B)
-map("n", "<C-b>", "<cmd> NvimTreeToggle <cr>", { desc = "Toggle Explorer" })
-map("n", "<D-b>", "<cmd> NvimTreeToggle <cr>", { desc = "Toggle Explorer" })
+map("n", "<C-m>", "<cmd> NvimTreeToggle <CR>", { desc = "Toggle Explorer" })
+map("i", "<C-m>", "<ESC><cmd> NvimTreeToggle <CR>", { desc = "Toggle Explorer" })
+map("v", "<C-m>", "<ESC><cmd> NvimTreeToggle <CR>", { desc = "Toggle Explorer" })
+
+map("n", "<D-m>", "<cmd> NvimTreeToggle <CR>", { desc = "Toggle Explorer" })
+map("i", "<D-m>", "<ESC><cmd> NvimTreeToggle <CR>", { desc = "Toggle Explorer" })
+map("v", "<D-m>", "<ESC><cmd> NvimTreeToggle <CR>", { desc = "Toggle Explorer" })
 
 -- Find files (Ctrl+P / Cmd+P)
 map("n", "<C-p>", function()
