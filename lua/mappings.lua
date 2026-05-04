@@ -136,11 +136,11 @@ map("n", "<leader>gg", "<cmd> LazyGit <cr>", { desc = "LazyGit" })
 -- Fast Navigation & Window Management
 -- ==========================================
 
--- Fast vertical scroll (30 lines)
-map({ "n", "v" }, "<C-j>", "30j", { desc = "Move down 30 lines" })
-map({ "n", "v" }, "<D-j>", "30j", { desc = "Move down 30 lines" })
-map({ "n", "v" }, "<C-k>", "30k", { desc = "Move up 30 lines" })
-map({ "n", "v" }, "<D-k>", "30k", { desc = "Move up 30 lines" })
+-- Fast vertical scroll (30 lines) with Buttery Smooth Animation
+map({ "n", "v" }, "<C-j>", function() require("neoscroll").scroll(30, true, 250) end, { desc = "Smooth move down 30 lines" })
+map({ "n", "v" }, "<D-j>", function() require("neoscroll").scroll(30, true, 250) end, { desc = "Smooth move down 30 lines" })
+map({ "n", "v" }, "<C-k>", function() require("neoscroll").scroll(-30, true, 250) end, { desc = "Smooth move up 30 lines" })
+map({ "n", "v" }, "<D-k>", function() require("neoscroll").scroll(-30, true, 250) end, { desc = "Smooth move up 30 lines" })
 
 -- Window Splitting
 map("n", "<C-S-l>", "<cmd> vsplit <cr> <C-w>l", { desc = "Split right" })
