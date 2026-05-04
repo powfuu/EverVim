@@ -10,12 +10,18 @@ map("i", "jk", "<ESC>")
 -- ==========================================
 
 -- Save file without formatting (Ctrl+S / Cmd+S)
-map({ "n", "i", "v" }, "<C-s>", "<cmd> noautocmd w <cr>", { desc = "Save file (no format)" })
-map({ "n", "i", "v" }, "<D-s>", "<cmd> noautocmd w <cr>", { desc = "Save file (no format)" })
+map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>", { desc = "Save file (no format)" })
+map({ "n", "i", "v" }, "<D-s>", "<cmd> w <cr>", { desc = "Save file (no format)" })
 
 -- Save file with formatting (Ctrl+Shift+S / Cmd+Shift+S)
-map({ "n", "i", "v" }, "<C-S-S>", "<cmd> w <cr>", { desc = "Save file (with format)" })
-map({ "n", "i", "v" }, "<D-S-s>", "<cmd> w <cr>", { desc = "Save file (with format)" })
+map({ "n", "i", "v" }, "<C-S-S>", function()
+  require("conform").format({ lsp_fallback = true })
+  vim.cmd("w")
+end, { desc = "Save file (with format)" })
+map({ "n", "i", "v" }, "<D-S-s>", function()
+  require("conform").format({ lsp_fallback = true })
+  vim.cmd("w")
+end, { desc = "Save file (with format)" })
 
 -- Close file (Ctrl+W / Cmd+W)
 map("n", "<C-w>", "<cmd> bd <cr>", { desc = "Close buffer" })
