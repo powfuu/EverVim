@@ -56,13 +56,6 @@ return {
       opts.mapping["<Up>"] = cmp.mapping.select_prev_item()
       opts.mapping["<Down>"] = cmp.mapping.select_next_item()
       
-      -- Smooth out the completion experience
-      opts.performance = {
-        debounce = 0, -- Trigger completion instantly
-        throttle = 0, -- Render completion instantly
-        fetching_timeout = 50,
-      }
-      
       -- Add smooth ghost text
       opts.experimental = {
         ghost_text = {

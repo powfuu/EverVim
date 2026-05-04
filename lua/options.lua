@@ -24,8 +24,8 @@ o.smoothscroll = true   -- Enable Neovim 0.10 native smooth scrolling for half-p
 -- ==========================================
 o.scrolloff = 15        -- editor.cursorSurroundingLines: 15 (Keep 15 lines of context around the cursor)
 
--- editor.cursorStyle: "underline" & editor.cursorBlinking: "phase"
+-- editor.cursorStyle: "line" & editor.cursorBlinking: "blink"
 -- n-v-c-sm:block (Normal/Visual: Block)
--- i-ci-ve:hor20 (Insert: Underline 20% height, with blinking)
+-- i-ci-ve:ver25 (Insert: Vertical bar 25% width, with blinking)
 -- r-cr-o:hor20 (Replace: Underline)
-o.guicursor = "n-v-c-sm:block,i-ci-ve:hor20-blinkwait300-blinkon200-blinkoff150,r-cr-o:hor20"
+o.guicursor = "n-v-c-sm:block,i-ci-ve:ver25-blinkwait300-blinkon200-blinkoff150,r-cr-o:hor20"
