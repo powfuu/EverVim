@@ -69,6 +69,25 @@ return {
   -- EverVim IDE Essential Plugins
   -- ==========================================
 
+  -- Telescope: Customize default search behavior
+  {
+    "nvim-telescope/telescope.nvim",
+    opts = function(_, opts)
+      opts.defaults.vimgrep_arguments = {
+        "rg",
+        "-L",
+        "--color=never",
+        "--no-heading",
+        "--with-filename",
+        "--line-number",
+        "--column",
+        "-i", -- Always ignore case (case-insensitive)
+        "-F", -- Fixed strings (literal match, no regex)
+      }
+      return opts
+    end,
+  },
+
   -- Neoscroll: Buttery smooth scrolling
   {
     "karb94/neoscroll.nvim",
@@ -154,6 +173,24 @@ return {
     event = "VeryLazy",
     config = function()
       require("nvim-surround").setup({})
+    end,
+  },
+
+  -- Nvim-ts-autotag: Auto close and auto rename HTML tags
+  {
+    "windwp/nvim-ts-autotag",
+    ft = { "html", "javascriptreact", "typescriptreact", "svelte", "vue", "xml", "jsp" },
+    config = function()
+      require("nvim-ts-autotag").setup({
+        opts = {
+          enable_close = true,           -- Auto close tags
+          enable_rename = true,          -- Auto rename pairs of tags
+          enable_close_on_slash = false, -- Auto close on trailing </
+        },
+        aliases = {
+          ["jsp"] = "html",
+        }
+      })
     end,
   },
 

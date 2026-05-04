@@ -32,3 +32,39 @@ autocmd({ "ColorScheme", "UIEnter", "SessionLoadPost" }, {
     vim.api.nvim_set_hl(0, "GitConflictAncestorLabel", { bg = "#512c40", default = false })
   end,
 })
+
+-- Pre-load terminal in the background for instant open (No delay on first toggle)
+-- We delay the execution to prevent it from blocking the main thread during startup
+autocmd("UIEnter", {
+  callback = function()
+    vim.defer_fn(function()
+      -- Create a hidden buffer
+      local buf = vim.api.nvim_create_buf(false, true)
+      
+      -- Set it as a terminal buffer
+      vim.bo[buf].buflisted = false
+      vim.bo[buf].ft = "NvTerm_float"
+      
+      -- Open terminal in the background
+      vim.api.nvim_buf_call(buf, function()
+        vim.fn.termopen(vim.o.shell)
+        -- Send a 'clear' command once the shell is ready so the first view is completely clean
+        vim.defer_fn(function()
+          local job_id = vim.b[buf].terminal_job_id
+          if job_id then
+            vim.api.nvim_chan_send(job_id, "clear\n")
+          end
+        end, 200)
+      end)
+
+      -- Register it for NvChad term toggle
+      local terms_list = vim.g.nvchad_terms or {}
+      terms_list[tostring(buf)] = {
+        id = "floatTerm",
+        buf = buf,
+        pos = "float",
+      }
+      vim.g.nvchad_terms = terms_list
+    end, 100) -- Delay by 100ms so the UI can finish rendering and scrolling is smooth immediately
+  end,
+})

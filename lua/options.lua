@@ -26,6 +26,7 @@ o.smoothscroll = true   -- Enable Neovim 0.10 native smooth scrolling for half-p
 -- Cursor & Viewport (VSCode Style)
 -- ==========================================
 o.scrolloff = 15        -- editor.cursorSurroundingLines: 15 (Keep 15 lines of context around the cursor)
+o.cmdheight = 0         -- Hide the default command line since we use FineCmdline
 
 -- editor.cursorStyle: "line" & editor.cursorBlinking: "blink"
 -- n-v-c-sm:block (Normal/Visual: Block)

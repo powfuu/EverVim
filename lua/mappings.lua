@@ -2,9 +2,7 @@ require "nvchad.mappings"
 
 local map = vim.keymap.set
 
--- Beautiful Centered Command Line (FineCmdline)
-map("n", ":", "<cmd>FineCmdline<CR>", { desc = "CMD enter command mode (Centered)" })
-map("n", ";", "<cmd>FineCmdline<CR>", { desc = "CMD enter command mode (Centered)" })
+-- Beautiful Centered Command Line (FineCmdline) is now mapped in plugins/init.lua for lazy loading
 
 -- Removed the "jk" to "<ESC>" mapping because it causes lag when typing the letter 'j'
 
@@ -71,20 +69,20 @@ map("n", "<D-S-p>", "<cmd> Telescope commands <cr>", { desc = "Command Palette" 
 map("n", "<C-S-F>", function()
   require("telescope.builtin").live_grep({
     additional_args = function()
-      return { "--hidden" } -- Removed --no-ignore so it respects .gitignore again
+      return { "--hidden" }
     end,
     file_ignore_patterns = { "node_modules/", "%.git/", "%.claude/" }
   })
-end, { desc = "Search in files (including hidden, excluding node_modules/.git/.claude)" })
+end, { desc = "Search in files (Exact match, ignore case)" })
 
 map("n", "<D-S-f>", function()
   require("telescope.builtin").live_grep({
     additional_args = function()
-      return { "--hidden" } -- Removed --no-ignore so it respects .gitignore again
+      return { "--hidden" }
     end,
     file_ignore_patterns = { "node_modules/", "%.git/", "%.claude/" }
   })
-end, { desc = "Search in files (including hidden, excluding node_modules/.git/.claude)" })
+end, { desc = "Search in files (Exact match, ignore case)" })
 
 -- Find in current file (Ctrl+F / Cmd+F)
 map("n", "<C-f>", "<cmd> Telescope current_buffer_fuzzy_find <cr>", { desc = "Find in file" })
