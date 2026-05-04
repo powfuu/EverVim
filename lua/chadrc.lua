@@ -11,6 +11,7 @@ M.base46 = {
 	hl_override = {
 		TelescopeSelection = { bg = "#04395E", fg = "#FFFFFF", bold = true },
     TelescopeSelectionCaret = { bg = "#04395E", fg = "#569CD6" },
+    CursorLine = { bg = "#2A2D2E" }, -- Very subtle dark grey for the current line
 	},
 
   hl_add = {

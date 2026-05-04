@@ -6,5 +6,5 @@ local o = vim.opt
 o.number = true
 o.relativenumber = true -- Relative line numbers
 
--- (Opcional) Highlight the current line
--- o.cursorline = true
+-- Highlight the current line
+o.cursorline = true
