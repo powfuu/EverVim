@@ -3,7 +3,7 @@ require "nvchad.mappings"
 local map = vim.keymap.set
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
-map("i", "jk", "<ESC>")
+-- Removed the "jk" to "<ESC>" mapping because it causes lag when typing the letter 'j'
 
 -- ==========================================
 -- VSCode / Trae IDE Keybindings
