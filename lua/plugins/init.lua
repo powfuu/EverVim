@@ -136,7 +136,7 @@ return {
 
       require("git-conflict").setup({
         default_mappings = false, -- We will set our own in mappings.lua
-        disable_diagnostics = true,
+        disable_diagnostics = false, -- Changed to false to prevent deprecated vim.diagnostic.disable() error in Neovim 0.10+
         highlights = {
           -- VSCode exact colors
           current = "GitConflictCurrent",     -- HEAD (Current changes)
