@@ -61,20 +61,35 @@ map("n", "<D-m>", "<cmd> NvimTreeToggle <CR>", { desc = "Toggle Explorer" })
 map("i", "<D-m>", "<ESC><cmd> NvimTreeToggle <CR>", { desc = "Toggle Explorer" })
 map("v", "<D-m>", "<ESC><cmd> NvimTreeToggle <CR>", { desc = "Toggle Explorer" })
 
--- Find files (Ctrl+P / Cmd+P)
-map("n", "<C-p>", function()
-  require("telescope.builtin").find_files({
-    hidden = true,
-    file_ignore_patterns = { "node_modules/", "%.git/", "%.claude/" }
-  })
-end, { desc = "Find files (including hidden, excluding node_modules/.git/.claude)" })
+-- Find files (Ctrl+P / Cmd+P) — min 2 chars, matches only filename not directories
+local function find_files_min2()
+  local conf = require("telescope.config").values
+  local make_entry = require("telescope.make_entry")
 
-map("n", "<D-p>", function()
+  local sorter = conf.file_sorter({})
+  local orig_score = sorter.scoring_function
+  sorter.scoring_function = function(self, prompt, line, entry)
+    if #prompt < 2 then return -1 end
+    return orig_score(self, prompt, line, entry)
+  end
+
+  local gen = make_entry.gen_from_file({})
   require("telescope.builtin").find_files({
-    hidden = true,
-    file_ignore_patterns = { "node_modules/", "%.git/", "%.claude/" }
+    file_ignore_patterns = { "node_modules/", "%.git/", "%.claude/", "dist/", "build/", "%.lock$" },
+    sorter = sorter,
+    entry_maker = function(filepath)
+      local entry = gen(filepath)
+      if entry then
+        -- Match only against the filename (e.g. "main.ts"), not the directory path
+        entry.ordinal = vim.fn.fnamemodify(filepath, ":t")
+      end
+      return entry
+    end,
   })
-end, { desc = "Find files (including hidden, excluding node_modules/.git/.claude)" })
+end
+
+map("n", "<C-p>", find_files_min2, { desc = "Find files" })
+map("n", "<D-p>", find_files_min2, { desc = "Find files" })
 
 -- Command Palette (Ctrl+Shift+P / Cmd+Shift+P)
 map("n", "<C-S-P>", "<cmd> Telescope commands <cr>", { desc = "Command Palette" })

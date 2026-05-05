@@ -105,6 +105,13 @@ return {
     },
   },
 
+  -- Telescope fzf native sorter (C extension — much faster fuzzy matching)
+  {
+    "nvim-telescope/telescope-fzf-native.nvim",
+    build = "make",
+    lazy = false,
+  },
+
   -- Telescope: Customize default search behavior
   {
     "nvim-telescope/telescope.nvim",
@@ -117,10 +124,23 @@ return {
         "--with-filename",
         "--line-number",
         "--column",
-        "-i", -- Always ignore case (case-insensitive)
-        "-F", -- Fixed strings (literal match, no regex)
+        "-i",
+        "-F",
+      }
+      -- Use fzf native sorter for fast fuzzy matching
+      opts.extensions = opts.extensions or {}
+      opts.extensions.fzf = {
+        fuzzy = true,
+        override_generic_sorter = true,
+        override_file_sorter = true,
+        case_mode = "ignore_case",
       }
       return opts
+    end,
+    config = function(_, opts)
+      local telescope = require("telescope")
+      telescope.setup(opts)
+      telescope.load_extension("fzf")
     end,
   },
 
@@ -482,6 +502,16 @@ return {
           function()
             -- Cerrar nvim-tree si está abierto para no romper la sesión
             pcall(vim.cmd, "NvimTreeClose")
+            -- Eliminar buffers sin nombre (vacíos) antes de guardar la sesión
+            for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+              if vim.api.nvim_buf_is_valid(buf)
+                and vim.bo[buf].buflisted
+                and vim.api.nvim_buf_get_name(buf) == ""
+                and not vim.bo[buf].modified
+              then
+                pcall(vim.api.nvim_buf_delete, buf, { force = false })
+              end
+            end
           end
         },
         post_restore_cmds = {
