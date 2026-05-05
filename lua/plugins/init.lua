@@ -276,11 +276,19 @@ return {
         delay         = 140,
         ignore_whitespace = false,
       }
-      opts.current_line_blame_formatter = "   <author>, <author_time:%R> • <summary>"
+      opts.current_line_blame_formatter = "        <author>, <author_time:%R> • <summary>"
       -- Only attach gitsigns to files under 500 KB
       opts.max_file_length = 10000  -- lines; skip very long files entirely
       opts._threaded_diff  = true   -- use background thread for diff computation (nvim 0.10+)
       return opts
+    end,
+    config = function(_, opts)
+      require("gitsigns").setup(opts)
+      -- Blame inline: gris apagado + itálica para no confundirse con el código
+      vim.api.nvim_set_hl(0, "GitSignsCurrentLineBlame", {
+        fg = "#3d4251",
+        italic = true,
+      })
     end,
   },
 

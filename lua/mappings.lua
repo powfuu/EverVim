@@ -168,6 +168,106 @@ map("n", "[c", "<cmd> GitConflictPrevConflict <cr>", { desc = "Previous Conflict
 -- Lazygit (Git UI)
 map("n", "<leader>gg", "<cmd> LazyGit <cr>", { desc = "LazyGit" })
 
+-- Git blame detail: muestra info del commit en split inferior (q para cerrar)
+map("n", "gt", function()
+  local file = vim.fn.expand("%:p")
+  local line = vim.fn.line(".")
+  local root = vim.fn.system("git -C " .. vim.fn.shellescape(vim.fn.fnamemodify(file, ":h")) .. " rev-parse --show-toplevel"):gsub("\n", "")
+  if vim.v.shell_error ~= 0 then
+    vim.notify("No es un repositorio git", vim.log.levels.WARN)
+    return
+  end
+
+  local blame = vim.fn.system(string.format(
+    "git -C %s blame -L %d,%d --porcelain %s 2>/dev/null",
+    vim.fn.shellescape(root), line, line, vim.fn.shellescape(file)
+  ))
+  local hash = blame:match("^(%x+)")
+  if not hash or hash:match("^0+$") then
+    vim.notify("Línea sin commit (cambio no guardado)", vim.log.levels.WARN)
+    return
+  end
+
+  local info = vim.fn.systemlist(string.format(
+    "git -C %s show --no-patch --format='%%n  Commit   %%h  (%%H)%%n  Autor    %%an <%%ae>%%n  Fecha    %%ad%%n  Mensaje  %%s%%n%%n%%b' --date=format:'%%Y-%%m-%%d  %%H:%%M:%%S' %s",
+    vim.fn.shellescape(root), hash
+  ))
+  local stats = vim.fn.systemlist(string.format(
+    "git -C %s show --stat --format='' %s | tail -n +2",
+    vim.fn.shellescape(root), hash
+  ))
+
+  local content = {}
+  vim.list_extend(content, info)
+  if #stats > 0 then
+    table.insert(content, "")
+    table.insert(content, "  Archivos cambiados:")
+    for _, l in ipairs(stats) do
+      table.insert(content, "  " .. l)
+    end
+  end
+  table.insert(content, "")
+
+  -- Reutilizar buffer existente si ya está abierto
+  local existing_buf = nil
+  for _, b in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_get_name(b):match("__GitBlame__") then
+      existing_buf = b
+      break
+    end
+  end
+
+  local buf = existing_buf or vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_name(buf, "__GitBlame__")
+  vim.bo[buf].buftype    = "nofile"
+  vim.bo[buf].bufhidden  = "wipe"
+  vim.bo[buf].swapfile   = false
+  vim.bo[buf].modifiable = true
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, content)
+  vim.bo[buf].modifiable = false
+
+  -- Abrir en split inferior si no está visible
+  local win = nil
+  for _, w in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_get_buf(w) == buf then win = w; break end
+  end
+  if not win then
+    vim.cmd("botright 12split")
+    vim.api.nvim_win_set_buf(0, buf)
+  else
+    vim.api.nvim_set_current_win(win)
+  end
+
+  vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = buf, silent = true })
+  vim.keymap.set("n", "<Esc>", "<cmd>close<cr>", { buffer = buf, silent = true })
+
+  -- Syntax highlighting
+  vim.api.nvim_buf_call(buf, function()
+    vim.cmd("syntax clear")
+    vim.cmd([[syn match GBLabel    /^\s\+\(Commit\|Autor\|Fecha\|Mensaje\)/]])
+    vim.cmd([[syn match GBHash     /\s\+\([a-f0-9]\{7,8\}\)\s/]])
+    vim.cmd([[syn match GBHashFull /([a-f0-9]\{40\})/]])
+    vim.cmd([[syn match GBEmail    /<[^>]\+>/]])
+    vim.cmd([[syn match GBDate     /\d\{4\}-\d\{2\}-\d\{2\}\s\+\d\{2\}:\d\{2\}:\d\{2\}/]])
+    vim.cmd([[syn match GBSection  /^\s*Archivos cambiados:/]])
+    vim.cmd([[syn match GBPlus     /+\+$/]])
+    vim.cmd([[syn match GBMinus    /-\+$/]])
+    vim.cmd([[syn match GBPipe     /|/]])
+    vim.cmd([[syn match GBFile     /^\s\+[^ |]\+\ze\s*|/]])
+  end)
+
+  vim.api.nvim_set_hl(0, "GBLabel",    { fg = "#7aa2f7", bold = true })
+  vim.api.nvim_set_hl(0, "GBHash",     { fg = "#e0af68", bold = true })
+  vim.api.nvim_set_hl(0, "GBHashFull", { fg = "#c0caf5" })
+  vim.api.nvim_set_hl(0, "GBEmail",    { fg = "#ff9e64", italic = true })
+  vim.api.nvim_set_hl(0, "GBDate",     { fg = "#bb9af7" })
+  vim.api.nvim_set_hl(0, "GBSection",  { fg = "#7dcfff", bold = true })
+  vim.api.nvim_set_hl(0, "GBPlus",     { fg = "#9ece6a", bold = true })
+  vim.api.nvim_set_hl(0, "GBMinus",    { fg = "#f7768e", bold = true })
+  vim.api.nvim_set_hl(0, "GBPipe",     { fg = "#3b4261" })
+  vim.api.nvim_set_hl(0, "GBFile",     { fg = "#c0caf5" })
+end, { desc = "Git blame detail (split)" })
+
 -- GitLens: File commit history with side-by-side diff — toggle (Ctrl+,)
 map("n", "<C-,>", function()
   local lib = require("diffview.lib")
