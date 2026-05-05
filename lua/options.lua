@@ -16,20 +16,25 @@ o.cursorlineopt = "both" -- 'both' means line number and the whole line backgrou
 -- ==========================================
 -- Fluidity & Performance tweaks
 -- ==========================================
-o.updatetime = 50       -- Faster completion, faster Git signs, smoother UI updates (default is 250)
-o.timeoutlen = 300      -- Faster mapping resolution
-o.pumblend = 10         -- Slight transparency in popup menus (autocomplete) for a sleek modern feel
-o.winblend = 10         -- Slight transparency in floating windows
-o.smoothscroll = true   -- Enable Neovim 0.10 native smooth scrolling for half-pages
+o.updatetime  = 200     -- 50ms is too aggressive (fires CursorHold/gitsigns 20x/sec); 200ms is the sweet spot
+o.timeoutlen  = 300     -- Faster mapping resolution
+o.pumblend    = 10      -- Slight transparency in popup menus
+o.winblend    = 10      -- Slight transparency in floating windows
+o.smoothscroll = true   -- Neovim 0.10 native smooth scrolling
+
+-- Reduce re-renders: only redraw when needed, not during macro/script execution
+o.lazyredraw  = false   -- keep false (true breaks some UIs), handled per-operation instead
+o.redrawtime  = 1500    -- abort syntax highlight after 1.5s on huge files (default 2000)
+
+-- Faster file I/O
+o.swapfile    = false   -- no swap files (auto-session saves state anyway)
+o.undofile    = true    -- persistent undo is fine, swap is the slow part
 
 -- ==========================================
 -- Cursor & Viewport (VSCode Style)
 -- ==========================================
-o.scrolloff = 15        -- editor.cursorSurroundingLines: 15 (Keep 15 lines of context around the cursor)
-o.cmdheight = 0         -- Hide the default command line since we use FineCmdline
+o.scrolloff    = 15     -- Keep 15 lines of context around the cursor
+o.cmdheight    = 0      -- Hide the default command line (we use FineCmdline)
+o.cursorlineopt = "both"   -- line number + full line bg (keep VSCode feel)
 
--- editor.cursorStyle: "line" & editor.cursorBlinking: "blink"
--- n-v-c-sm:block (Normal/Visual: Block)
--- i-ci-ve:ver25 (Insert: Vertical bar 25% width, with blinking)
--- r-cr-o:hor20 (Replace: Underline)
 o.guicursor = "n-v-c-sm:block,i-ci-ve:ver25-blinkwait300-blinkon200-blinkoff150,r-cr-o:hor20"

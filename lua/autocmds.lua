@@ -34,7 +34,7 @@ autocmd({ "ColorScheme", "UIEnter", "SessionLoadPost" }, {
 })
 
 -- Pre-load terminal in the background for instant open (No delay on first toggle)
--- We delay the execution to prevent it from blocking the main thread during startup
+-- Delayed to 2s so startup rendering and LSP attach finish first
 autocmd("UIEnter", {
   callback = function()
     vim.defer_fn(function()
@@ -49,12 +49,13 @@ autocmd("UIEnter", {
       vim.api.nvim_buf_call(buf, function()
         vim.fn.termopen(vim.o.shell)
         -- Send a 'clear' command once the shell is ready so the first view is completely clean
+        -- Increased delay to 600ms to ensure ZSH and NVM finish loading before clearing
         vim.defer_fn(function()
           local job_id = vim.b[buf].terminal_job_id
           if job_id then
             vim.api.nvim_chan_send(job_id, "clear\n")
           end
-        end, 200)
+        end, 400)
       end)
 
       -- Register it for NvChad term toggle
@@ -65,6 +66,6 @@ autocmd("UIEnter", {
         pos = "float",
       }
       vim.g.nvchad_terms = terms_list
-    end, 100) -- Delay by 100ms so the UI can finish rendering and scrolling is smooth immediately
+    end, 2000) -- Delay 2s: let startup, LSP attach, and session restore finish before forking a shell
   end,
 })

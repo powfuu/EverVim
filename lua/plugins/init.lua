@@ -46,6 +46,24 @@ return {
         "javascript", "typescript", "tsx",
         "json", "yaml", "ruby", "angular"
       },
+      highlight = {
+        enable = true,
+        -- Disable treesitter on files larger than 250 KB — the parser blocks the main thread
+        disable = function(_, buf)
+          local max_bytes = 250 * 1024
+          local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
+          return ok and stats and stats.size > max_bytes
+        end,
+      },
+      indent = {
+        enable = true,
+        -- Same threshold for indentation
+        disable = function(_, buf)
+          local max_bytes = 250 * 1024
+          local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
+          return ok and stats and stats.size > max_bytes
+        end,
+      },
     },
   },
 
@@ -53,14 +71,19 @@ return {
     "hrsh7th/nvim-cmp",
     opts = function(_, opts)
       local cmp = require("cmp")
-      opts.mapping["<Up>"] = cmp.mapping.select_prev_item()
+      opts.mapping["<Up>"]   = cmp.mapping.select_prev_item()
       opts.mapping["<Down>"] = cmp.mapping.select_next_item()
-      
-      -- Add smooth ghost text
+
+      -- Debounce: wait 60ms after last keystroke before querying sources (reduces LSP hammering)
+      opts.performance = {
+        debounce        = 60,
+        throttle        = 30,
+        fetching_timeout = 500,  -- drop slow sources after 500ms instead of waiting forever
+        max_view_entries = 20,   -- cap the popup to 20 items (rendering more is wasted work)
+      }
+
       opts.experimental = {
-        ghost_text = {
-          hl_group = "CmpGhostText",
-        },
+        ghost_text = { hl_group = "CmpGhostText" },
       }
     end,
   },
@@ -69,12 +92,15 @@ return {
   -- EverVim IDE Essential Plugins
   -- ==========================================
 
-  -- Override NvimTree to add relative numbers
+  -- Override NvimTree to add relative numbers and hide dotfiles
   {
     "nvim-tree/nvim-tree.lua",
     opts = {
       view = {
         relativenumber = true,
+      },
+      filters = {
+        dotfiles = true,
       },
     },
   },
@@ -225,12 +251,15 @@ return {
     opts = function(_, opts)
       opts.current_line_blame = true
       opts.current_line_blame_opts = {
-        virt_text = true,
-        virt_text_pos = "eol", -- 'eol' | 'overlay' | 'right_align'
-        delay = 500, -- Delay in ms before showing the blame
+        virt_text     = true,
+        virt_text_pos = "eol",
+        delay         = 140,
         ignore_whitespace = false,
       }
       opts.current_line_blame_formatter = "   <author>, <author_time:%R> • <summary>"
+      -- Only attach gitsigns to files under 500 KB
+      opts.max_file_length = 10000  -- lines; skip very long files entirely
+      opts._threaded_diff  = true   -- use background thread for diff computation (nvim 0.10+)
       return opts
     end,
   },
@@ -258,6 +287,181 @@ return {
           incoming = "GitConflictIncoming",   -- Develop (Incoming changes)
           ancestor = "GitConflictAncestor",
         }
+      })
+    end,
+  },
+
+  -- Scrollbar: shows change markers (red/green) on the right edge of diff buffers
+  {
+    "petertriho/nvim-scrollbar",
+    event = "BufReadPost",
+    config = function()
+      require("scrollbar").setup({
+        show_in_active_only = false,
+        set_highlights = true,
+        handle = { highlight = "CursorLine" },
+        marks = {
+          GitAdd    = { text = "▏", highlight = "GitSignsAdd" },
+          GitChange = { text = "▏", highlight = "GitSignsChange" },
+          GitDelete = { text = "▏", highlight = "GitSignsDelete" },
+        },
+        handlers = {
+          cursor     = false,
+          diagnostic = false,
+          gitsigns   = false,
+          search     = false,
+          handle     = true,
+        },
+        excluded_filetypes = {
+          "NvimTree", "lazy", "mason", "TelescopePrompt",
+          "DiffviewFiles", "DiffviewFileHistory",
+        },
+      })
+    end,
+  },
+
+  -- Diffview: GitLens-like file history with beautiful side-by-side diffs
+  {
+    "sindrets/diffview.nvim",
+    cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewClose" },
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      vim.api.nvim_set_hl(0, "DiffAdd",    { bg = "#1a3d2b", fg = "NONE" })
+      vim.api.nvim_set_hl(0, "DiffDelete", { bg = "#3d1a1a", fg = "#6b3333" })
+      vim.api.nvim_set_hl(0, "DiffChange", { bg = "#1a2d3d", fg = "NONE" })
+      vim.api.nvim_set_hl(0, "DiffText",   { bg = "#0d4a6b", fg = "NONE", bold = true })
+
+      -- Track which buffers are diffview diff buffers (for the scrollbar handler)
+      local diffview_bufs = {}
+
+      -- Register custom scrollbar handler: reads DiffAdd/DiffDelete extmarks per buffer
+      vim.defer_fn(function()
+        local ok, handlers = pcall(require, "scrollbar.handlers")
+        if not ok then return end
+        handlers.register("diffview_diff", function(bufnr)
+          if not diffview_bufs[bufnr] then return {} end
+          if not vim.api.nvim_buf_is_valid(bufnr) then return {} end
+          local marks, seen = {}, {}
+          for _, ns_id in pairs(vim.api.nvim_get_namespaces()) do
+            local ok2, extmarks = pcall(
+              vim.api.nvim_buf_get_extmarks, bufnr, ns_id, 0, -1, { details = true }
+            )
+            if ok2 then
+              for _, mark in ipairs(extmarks) do
+                local lnum = mark[2] + 1
+                local d    = mark[4]
+                if d and d.hl_group and not seen[lnum] then
+                  local hl = d.hl_group
+                  if hl:find("[Aa]dd") then
+                    table.insert(marks, { line = lnum, type = "GitAdd" })
+                    seen[lnum] = true
+                  elseif hl:find("[Dd]elete") then
+                    table.insert(marks, { line = lnum, type = "GitDelete" })
+                    seen[lnum] = true
+                  end
+                end
+              end
+            end
+          end
+          return marks
+        end)
+      end, 200)
+
+      require("diffview").setup({
+        enhanced_diff_hl = true,
+        diff_binaries    = false,
+        view = {
+          file_history = {
+            layout      = "diff2_horizontal",
+            winbar_info = true,
+          },
+        },
+        file_history_panel = {
+          log_options = {
+            git = {
+              single_file = { diff_merges = "first-parent" },
+              multi_file  = { diff_merges = "first-parent" },
+            },
+          },
+          win_config = { position = "bottom", height = 18 },
+        },
+        hooks = {
+          view_opened = function(_)
+            -- Move cursor to first entry (top of commit list) every time the panel opens
+            vim.defer_fn(function()
+              for _, winid in ipairs(vim.api.nvim_list_wins()) do
+                local buf = vim.api.nvim_win_get_buf(winid)
+                local ft  = vim.bo[buf].filetype
+                if ft == "DiffviewFileHistoryPanel" then
+                  vim.api.nvim_win_call(winid, function()
+                    vim.cmd("normal! gg")
+                    pcall(require("diffview.actions").select_entry)
+                  end)
+                  break
+                end
+              end
+            end, 80)
+          end,
+          diff_buf_read = function(bufnr)
+            diffview_bufs[bufnr] = true
+
+            vim.opt_local.wrap        = false
+            vim.opt_local.list        = false
+            vim.opt_local.colorcolumn = ""
+
+            -- foldmethod=diff is a WINDOW option that Neovim sets after this hook.
+            -- We override it per-window with a delay so it fires after diffview finishes.
+            local function unfold_windows()
+              if not vim.api.nvim_buf_is_valid(bufnr) then return end
+              for _, winid in ipairs(vim.fn.win_findbuf(bufnr)) do
+                vim.api.nvim_win_call(winid, function()
+                  vim.cmd("setlocal foldmethod=manual foldlevel=99")
+                  pcall(vim.cmd, "normal! zR")
+                end)
+              end
+            end
+
+            vim.defer_fn(unfold_windows, 80)
+            vim.defer_fn(unfold_windows, 250) -- second pass: covers slow renders
+
+            -- Refresh scrollbar markers after highlights are applied
+            vim.defer_fn(function()
+              if vim.api.nvim_buf_is_valid(bufnr) then
+                pcall(require("scrollbar").render)
+              end
+            end, 350)
+          end,
+          view_closed = function(_)
+            diffview_bufs = {}
+          end,
+        },
+        keymaps = {
+          file_history_panel = {
+            { "n", "q",     "<cmd>DiffviewClose<CR>", { desc = "Close Diffview" } },
+            { "n", "<ESC>", "<cmd>DiffviewClose<CR>", { desc = "Close Diffview" } },
+            -- j/k: debounced preview — waits 180ms after the last keypress before loading
+            -- the diff buffer, so rapid navigation never triggers a parallel load.
+            { "n", "j", function()
+              vim.cmd("normal! j")
+              if _G._dv_preview_timer then _G._dv_preview_timer:stop() end
+              _G._dv_preview_timer = vim.defer_fn(function()
+                pcall(require("diffview.actions").select_entry)
+              end, 180)
+            end, { desc = "Next commit (preview)" } },
+            { "n", "k", function()
+              vim.cmd("normal! k")
+              if _G._dv_preview_timer then _G._dv_preview_timer:stop() end
+              _G._dv_preview_timer = vim.defer_fn(function()
+                pcall(require("diffview.actions").select_entry)
+              end, 180)
+            end, { desc = "Prev commit (preview)" } },
+          },
+          view = {
+            { "n", "q",     "<cmd>DiffviewClose<CR>",    { desc = "Close Diffview" } },
+            { "n", "<ESC>", "<cmd>DiffviewClose<CR>",    { desc = "Close Diffview" } },
+            { "n", "<C-j>", "<cmd>DiffviewFocusFiles<CR>", { desc = "Focus commit history panel" } },
+          },
+        },
       })
     end,
   },

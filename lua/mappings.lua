@@ -153,6 +153,18 @@ map("n", "[c", "<cmd> GitConflictPrevConflict <cr>", { desc = "Previous Conflict
 -- Lazygit (Git UI)
 map("n", "<leader>gg", "<cmd> LazyGit <cr>", { desc = "LazyGit" })
 
+-- GitLens: File commit history with side-by-side diff — toggle (Ctrl+,)
+map("n", "<C-,>", function()
+  local lib = require("diffview.lib")
+  if lib.get_current_view() then
+    vim.cmd("DiffviewClose")
+  else
+    local file = vim.fn.expand("%:p")
+    if file == "" then return end
+    vim.cmd("DiffviewFileHistory " .. vim.fn.fnameescape(file))
+  end
+end, { desc = "Toggle Git file history (GitLens)" })
+
 -- ==========================================
 -- Fast Navigation & Window Management
 -- ==========================================

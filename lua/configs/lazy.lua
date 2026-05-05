@@ -1,17 +1,22 @@
 return {
   defaults = { lazy = true },
-  install = { colorscheme = { "nvchad" } },
+  install  = { colorscheme = { "nvchad" } },
+
+  -- Disable background update checks (network I/O during editing causes micro-freezes)
+  checker          = { enabled = false },
+  change_detection = { enabled = false },
 
   ui = {
     icons = {
-      ft = "",
-      lazy = "󰂠 ",
-      loaded = "",
-      not_loaded = "",
+      ft        = "",
+      lazy      = "󰂠 ",
+      loaded    = "",
+      not_loaded = "",
     },
   },
 
   performance = {
+    cache = { enabled = true },
     rtp = {
       disabled_plugins = {
         "2html_plugin",
