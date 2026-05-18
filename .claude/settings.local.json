@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/everit/.local/share/nvim/**)",
+      "Bash(nvim --headless -c \"lua print\\(vim.inspect\\(vim.treesitter.language.get_filetypes\\('angular'\\)\\)\\)\" -c \"q\")",
+      "Bash(nvim --headless -c \"lua local ft = vim.bo.filetype; print\\('ft:', ft\\)\" -c \"q\")",
+      "Bash(nvim *)",
+      "Bash(grep -v \"^$\")"
+    ]
+  }
+}

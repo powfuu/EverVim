@@ -20,14 +20,22 @@ autocmd({ "SessionLoadPost", "UIEnter" }, {
   end,
 })
 
--- Force custom HTML tags (e.g. <mm-combobox>) to be highlighted as HTML tags
+-- Use the Angular treesitter parser for HTML files (supports @if, @for, Ionic tags, etc.)
+autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = "*.html",
+  callback = function()
+    vim.treesitter.language.register("angular", "html")
+  end,
+})
+
+-- Force custom HTML tags (e.g. <ion-card>, <mm-combobox>) to be highlighted as HTML tags
 autocmd({ "FileType" }, {
-  pattern = { "html", "javascriptreact", "typescriptreact", "vue", "svelte", "jsp" },
+  pattern = { "html", "htmlangular", "javascriptreact", "typescriptreact", "vue", "svelte", "jsp" },
   callback = function()
     vim.cmd([[syntax match htmlTagName /\<[a-zA-Z0-9]\+-[a-zA-Z0-9\-]\+\>/]])
-    -- Also explicitly map it to the Treesitter tag highlight just in case
     vim.api.nvim_set_hl(0, "@tag.html", { link = "htmlTagName", default = true })
     vim.api.nvim_set_hl(0, "@tag", { link = "htmlTagName", default = true })
+    vim.api.nvim_set_hl(0, "@tag.angular", { link = "htmlTagName", default = true })
   end,
 })
 

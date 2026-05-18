@@ -235,7 +235,7 @@ return {
   -- Nvim-ts-autotag: Auto close and auto rename HTML tags
   {
     "windwp/nvim-ts-autotag",
-    ft = { "html", "javascriptreact", "typescriptreact", "svelte", "vue", "xml", "jsp" },
+    ft = { "html", "htmlangular", "javascriptreact", "typescriptreact", "svelte", "vue", "xml", "jsp" },
     config = function()
       require("nvim-ts-autotag").setup({
         opts = {
