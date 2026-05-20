@@ -2,6 +2,7 @@ require "nvchad.autocmds"
 
 local autocmd = vim.api.nvim_create_autocmd
 
+
 -- Remove stray [No Name] buffers after session restore or after plugins open extra bufs
 autocmd({ "SessionLoadPost", "UIEnter" }, {
   callback = function()

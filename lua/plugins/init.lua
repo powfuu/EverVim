@@ -105,6 +105,92 @@ return {
   -- EverVim IDE Essential Plugins
   -- ==========================================
 
+  -- nvim-notify: floating notification backend (used by noice)
+  {
+    "rcarriga/nvim-notify",
+    lazy = false,
+    priority = 1000,
+    opts = {
+      stages = "fade",
+      timeout = 2000,
+      max_width = 60,
+      render = "minimal",
+      top_down = true,
+      background_colour = "#000000",
+    },
+  },
+
+  -- noice.nvim: intercepts ALL vim messages/errors at the core level
+  -- Eliminates "Press ENTER to continue" for every error (E21, LSP, runtime, etc.)
+  -- cmdline is DISABLED here — fine-cmdline handles : and ; instead
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify",
+    },
+    opts = {
+      -- Disable noice cmdline — fine-cmdline already handles this
+      cmdline = { enabled = false },
+      -- Disable noice command history popup (we use fine-cmdline)
+      messages = { enabled = true },
+      popupmenu = { enabled = false },
+      notify = { enabled = true },
+      lsp = {
+        -- Show LSP progress in bottom-right corner
+        progress = { enabled = true },
+        override = {
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          ["vim.lsp.util.stylize_markdown"] = true,
+          ["cmp.entry.get_documentation"] = true,
+        },
+        hover    = { enabled = false }, -- keep default LSP hover
+        signature = { enabled = false },
+      },
+      routes = {
+        -- Route ALL errors → notify (top-right float, 2s, no cmdline prompt)
+        {
+          filter = { error = true },
+          opts   = { skip = false },
+          view   = "notify",
+        },
+        -- Route warnings → notify
+        {
+          filter = { warning = true },
+          view   = "notify",
+        },
+        -- Silence common noisy write/search messages
+        {
+          filter = {
+            event = "msg_show",
+            any = {
+              { find = "%d+L, %d+B" },
+              { find = "; after #%d+" },
+              { find = "; before #%d+" },
+              { find = "%d+ lines yanked" },
+              { find = "%d+ fewer lines" },
+              { find = "%d+ more lines" },
+              { find = "^/" },
+            },
+          },
+          opts = { skip = true },
+        },
+      },
+      views = {
+        notify = {
+          replace = true,
+          merge   = false,
+        },
+      },
+    },
+    config = function(_, opts)
+      require("noice").setup(opts)
+      -- Wire nvim-notify as the backend so notifications appear top-right
+      vim.notify = require("notify")
+    end,
+  },
+
   -- Override NvimTree: relative numbers, hide dotfiles, open in last used window
   {
     "nvim-tree/nvim-tree.lua",

@@ -17,7 +17,7 @@ o.cursorlineopt = "both" -- 'both' means line number and the whole line backgrou
 -- Fluidity & Performance tweaks
 -- ==========================================
 o.updatetime  = 200     -- 50ms is too aggressive (fires CursorHold/gitsigns 20x/sec); 200ms is the sweet spot
-o.timeoutlen  = 0     -- Faster mapping resolution
+o.timeoutlen  = 100   -- Allow multi-char keymaps (ff, fo, th, leader sequences)
 o.pumblend    = 10      -- Slight transparency in popup menus
 o.winblend    = 10      -- Slight transparency in floating windows
 o.smoothscroll = true   -- Neovim 0.10 native smooth scrolling
