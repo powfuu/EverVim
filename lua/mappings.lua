@@ -296,18 +296,18 @@ map({ "n", "v" }, "<D-j>", function() require("neoscroll").scroll(30, true, 250)
 map({ "n", "v" }, "<C-k>", function() require("neoscroll").scroll(-30, true, 250) end, { desc = "Smooth move up 30 lines" })
 map({ "n", "v" }, "<D-k>", function() require("neoscroll").scroll(-30, true, 250) end, { desc = "Smooth move up 30 lines" })
 
--- Window Splitting
-map("n", "<C-S-l>", "<cmd> vsplit <cr> <C-w>l", { desc = "Split right" })
-map("n", "<D-S-l>", "<cmd> vsplit <cr> <C-w>l", { desc = "Split right" })
+-- Window Navigation
+map("n", "<C-S-l>", "<C-w>l", { desc = "Navigate window right" })
+map("n", "<D-S-l>", "<C-w>l", { desc = "Navigate window right" })
 
-map("n", "<C-S-h>", "<cmd> leftabove vsplit <cr> <C-w>h", { desc = "Split left" })
-map("n", "<D-S-h>", "<cmd> leftabove vsplit <cr> <C-w>h", { desc = "Split left" })
+map("n", "<C-S-h>", "<C-w>h", { desc = "Navigate window left" })
+map("n", "<D-S-h>", "<C-w>h", { desc = "Navigate window left" })
 
-map("n", "<C-S-j>", "<cmd> split <cr> <C-w>j", { desc = "Split down" })
-map("n", "<D-S-j>", "<cmd> split <cr> <C-w>j", { desc = "Split down" })
+map("n", "<C-S-j>", "<C-w>j", { desc = "Navigate window down" })
+map("n", "<D-S-j>", "<C-w>j", { desc = "Navigate window down" })
 
-map("n", "<C-S-k>", "<cmd> leftabove split <cr> <C-w>k", { desc = "Split up" })
-map("n", "<D-S-k>", "<cmd> leftabove split <cr> <C-w>k", { desc = "Split up" })
+map("n", "<C-S-k>", "<C-w>k", { desc = "Navigate window up" })
+map("n", "<D-S-k>", "<C-w>k", { desc = "Navigate window up" })
 
 -- Tab Navigation (Shift + Option + H/L)
 map("n", "<A-S-l>", function() require("nvchad.tabufline").next() end, { desc = "Next Tab" })

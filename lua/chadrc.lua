@@ -6,7 +6,7 @@
 local M = {}
 
 M.base46 = {
-	theme = "vscode_dark",
+	theme = "yoru",
 
 	hl_override = {
 		TelescopeSelection = { bg = "#04395E", fg = "#FFFFFF", bold = true },
