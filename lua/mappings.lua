@@ -143,6 +143,12 @@ map({ "n", "t" }, "<D-n>", function()
   require("nvchad.term").toggle { pos = "float", id = "floatTerm" }
 end, { desc = "Toggle Terminal" })
 
+-- Theme Picker (real-time preview, 90+ themes, Enter to save)
+-- NvChad built-in: j/k to browse, themes apply live, Enter saves to chadrc.lua
+map("n", "<leader>th", function() require("nvchad.themes").open() end, { desc = "Theme Picker" })
+map("n", "<C-k>t", function() require("nvchad.themes").open() end, { desc = "Theme Picker" })
+map("n", "<D-k>t", function() require("nvchad.themes").open() end, { desc = "Theme Picker" })
+
 -- ==========================================
 -- EverVim IDE Advanced Features
 -- ==========================================
