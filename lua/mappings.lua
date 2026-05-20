@@ -39,9 +39,12 @@ map({ "n", "i", "v" }, "<D-S-s>", function()
   vim.cmd("w")
 end, { desc = "Save file (with format)" })
 
--- Close file (Ctrl+W / Cmd+W)
-map("n", "<C-w>", "<cmd> bd <cr>", { desc = "Close buffer" })
-map("n", "<D-w>", "<cmd> bd <cr>", { desc = "Close buffer" })
+-- Close window/split (Ctrl+W / Cmd+W)
+map("n", "<C-w>", "<cmd> close <cr>", { desc = "Close window split" })
+map("n", "<D-w>", "<cmd> close <cr>", { desc = "Close window split" })
+
+-- Close buffer only (leader+w)
+map("n", "<leader>w", "<cmd> bd <cr>", { desc = "Close buffer" })
 
 -- Close Window Split (without closing the buffer)
 map("n", "<C-M-w>", "<cmd> close <cr>", { desc = "Close window split" })
@@ -290,24 +293,28 @@ end, { desc = "Toggle Git file history (GitLens)" })
 -- Fast Navigation & Window Management
 -- ==========================================
 
--- Fast vertical scroll (30 lines) with Buttery Smooth Animation
-map({ "n", "v" }, "<C-j>", function() require("neoscroll").scroll(30, true, 250) end, { desc = "Smooth move down 30 lines" })
-map({ "n", "v" }, "<D-j>", function() require("neoscroll").scroll(30, true, 250) end, { desc = "Smooth move down 30 lines" })
-map({ "n", "v" }, "<C-k>", function() require("neoscroll").scroll(-30, true, 250) end, { desc = "Smooth move up 30 lines" })
-map({ "n", "v" }, "<D-k>", function() require("neoscroll").scroll(-30, true, 250) end, { desc = "Smooth move up 30 lines" })
+-- Terminal: Esc exits insert mode (enter vim normal mode inside terminal buffer)
+map("t", "<Esc>", "<C-\\><C-n>", { desc = "Terminal → normal mode" })
 
--- Window Navigation
-map("n", "<C-S-l>", "<C-w>l", { desc = "Navigate window right" })
-map("n", "<D-S-l>", "<C-w>l", { desc = "Navigate window right" })
+-- Window Navigation (Shift + hjkl)
+map("n", "<S-h>", "<C-w>h", { desc = "Navigate window left" })
+map("n", "<S-j>", "<C-w>j", { desc = "Navigate window down" })
+map("n", "<S-k>", "<C-w>k", { desc = "Navigate window up" })
+map("n", "<S-l>", "<C-w>l", { desc = "Navigate window right" })
 
-map("n", "<C-S-h>", "<C-w>h", { desc = "Navigate window left" })
-map("n", "<D-S-h>", "<C-w>h", { desc = "Navigate window left" })
+-- Create Splits (Ctrl+Shift + hjkl)
+map("n", "<C-S-h>", "<cmd>leftabove vsplit<cr>", { desc = "Split left" })
+map("n", "<C-S-j>", "<cmd>rightbelow split<cr>", { desc = "Split down" })
+map("n", "<C-S-k>", "<cmd>leftabove split<cr>", { desc = "Split up" })
+map("n", "<C-S-l>", "<cmd>rightbelow vsplit<cr>", { desc = "Split right" })
 
-map("n", "<D-S-j>", "<C-w>j", { desc = "Navigate window down" })
+-- Tab Navigation (Ctrl + hjkl)
+map("n", "<C-h>", function() require("nvchad.tabufline").prev() end, { desc = "Prev Tab" })
+map("n", "<C-l>", function() require("nvchad.tabufline").next() end, { desc = "Next Tab" })
+map("n", "<C-j>", function() require("nvchad.tabufline").next() end, { desc = "Next Tab" })
+map("n", "<C-k>", function() require("nvchad.tabufline").prev() end, { desc = "Prev Tab" })
 
-map("n", "<D-S-k>", "<C-w>k", { desc = "Navigate window up" })
-
--- Tab Navigation (Shift + Option + H/L)
+-- Tab Navigation (Shift + Option + H/L) — legacy Mac keys
 map("n", "<A-S-l>", function() require("nvchad.tabufline").next() end, { desc = "Next Tab" })
 map("n", "<A-S-h>", function() require("nvchad.tabufline").prev() end, { desc = "Prev Tab" })
 map("n", "Ò", function() require("nvchad.tabufline").next() end, { desc = "Next Tab (Mac)" })

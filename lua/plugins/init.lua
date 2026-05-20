@@ -1,4 +1,11 @@
 return {
+  -- Force which-key to load eagerly so leader always shows the popup,
+  -- even before any lazy-load trigger key is pressed.
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+  },
+
   {
     "stevearc/conform.nvim",
     event = 'BufWritePre', -- uncomment for format on save
