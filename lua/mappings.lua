@@ -39,12 +39,12 @@ map({ "n", "i", "v" }, "<D-S-s>", function()
   vim.cmd("w")
 end, { desc = "Save file (with format)" })
 
--- Close window/split (Ctrl+W / Cmd+W)
-map("n", "<C-w>", "<cmd> close <cr>", { desc = "Close window split" })
-map("n", "<D-w>", "<cmd> close <cr>", { desc = "Close window split" })
+-- Close buffer + split (Ctrl+W / Cmd+W)
+map("n", "<C-w>", "<cmd> bd <cr>", { desc = "Close buffer" })
+map("n", "<D-w>", "<cmd> bd <cr>", { desc = "Close buffer" })
 
--- Close buffer only (leader+w)
-map("n", "<leader>w", "<cmd> bd <cr>", { desc = "Close buffer" })
+-- Close split only, keep buffer (leader+w)
+map("n", "<leader>w", "<cmd> close <cr>", { desc = "Close split" })
 
 -- Close Window Split (without closing the buffer)
 map("n", "<C-M-w>", "<cmd> close <cr>", { desc = "Close window split" })
