@@ -4,6 +4,12 @@ return {
   {
     "folke/which-key.nvim",
     event = "VeryLazy",
+    opts = function(_, opts)
+      opts.delay = 300
+      opts.spec = opts.spec or {}
+      table.insert(opts.spec, { "<C-w>", hidden = true })
+      return opts
+    end,
   },
 
   {
@@ -99,7 +105,7 @@ return {
   -- EverVim IDE Essential Plugins
   -- ==========================================
 
-  -- Override NvimTree to add relative numbers and hide dotfiles
+  -- Override NvimTree: relative numbers, hide dotfiles, open in last used window
   {
     "nvim-tree/nvim-tree.lua",
     opts = {
@@ -108,6 +114,13 @@ return {
       },
       filters = {
         dotfiles = true,
+      },
+      actions = {
+        open_file = {
+          window_picker = {
+            enable = false,
+          },
+        },
       },
     },
   },
