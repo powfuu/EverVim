@@ -303,10 +303,8 @@ map("n", "<D-S-l>", "<C-w>l", { desc = "Navigate window right" })
 map("n", "<C-S-h>", "<C-w>h", { desc = "Navigate window left" })
 map("n", "<D-S-h>", "<C-w>h", { desc = "Navigate window left" })
 
-map("n", "<C-S-j>", "<C-w>j", { desc = "Navigate window down" })
 map("n", "<D-S-j>", "<C-w>j", { desc = "Navigate window down" })
 
-map("n", "<C-S-k>", "<C-w>k", { desc = "Navigate window up" })
 map("n", "<D-S-k>", "<C-w>k", { desc = "Navigate window up" })
 
 -- Tab Navigation (Shift + Option + H/L)
