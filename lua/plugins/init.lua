@@ -392,7 +392,7 @@ return {
       require("gitsigns").setup(opts)
       -- Blame inline: gris apagado + itálica para no confundirse con el código
       vim.api.nvim_set_hl(0, "GitSignsCurrentLineBlame", {
-        fg = "#3d4251",
+        fg = "#a0a8b8",
         italic = true,
       })
     end,
