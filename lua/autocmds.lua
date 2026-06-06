@@ -130,3 +130,13 @@ autocmd("UIEnter", {
     end, 2000) -- Delay 2s: let startup, LSP attach, and session restore finish before forking a shell
   end,
 })
+
+-- <C-w> closes terminal buffers (both from terminal-insert and normal mode)
+autocmd("TermOpen", {
+  callback = function()
+    local buf = vim.api.nvim_get_current_buf()
+    local opts = { buffer = buf, noremap = true, silent = true }
+    vim.keymap.set("t", "<C-w>", "<C-\\><C-n><cmd>bd!<cr>", opts)
+    vim.keymap.set("n", "<C-w>", "<cmd>bd!<cr>", opts)
+  end,
+})

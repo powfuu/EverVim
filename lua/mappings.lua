@@ -307,6 +307,8 @@ end, { desc = "Toggle Git file history (GitLens)" })
 -- Terminal: Esc exits insert mode (enter vim normal mode inside terminal buffer)
 map("t", "<Esc>", "<C-\\><C-n>", { desc = "Terminal → normal mode" })
 
+-- Terminal: <C-w> closes the terminal buffer (buffer-local, set via autocmd in autocmds.lua)
+
 -- Window Navigation (Shift + hjkl)
 map("n", "<S-h>", "<C-w>h", { desc = "Navigate window left", noremap = true, silent = true })
 map("n", "<S-j>", "<C-w>j", { desc = "Navigate window down", noremap = true, silent = true })
