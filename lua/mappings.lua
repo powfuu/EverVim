@@ -132,6 +132,12 @@ map("v", "<C-/>", "gc", { desc = "Toggle Comment", remap = true })
 map("n", "<D-/>", "gcc", { desc = "Toggle Comment", remap = true })
 map("v", "<D-/>", "gc", { desc = "Toggle Comment", remap = true })
 
+-- Terminal in current tab (new buffer)
+map("n", "<leader> ", function()
+  vim.cmd "terminal"
+  vim.cmd "startinsert"
+end, { desc = "Terminal in current tab" })
+
 -- Toggle Terminal (ctrl+n / cmd+n)
 map({ "n", "t" }, "<C-n>", function()
   require("nvchad.term").toggle { pos = "float", id = "floatTerm" }
