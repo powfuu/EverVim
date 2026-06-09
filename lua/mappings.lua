@@ -187,6 +187,7 @@ map("n", "[c", "<cmd> GitConflictPrevConflict <cr>", { desc = "Previous Conflict
 
 -- Lazygit (Git UI)
 map("n", "<leader>gg", "<cmd> LazyGit <cr>", { desc = "LazyGit" })
+map("n", "<leader>gh", function() require("base46").toggle_transparency() end, { desc = "Toggle bg transparency" })
 
 -- Git blame detail: muestra info del commit en split inferior (q para cerrar)
 map("n", "gt", function()
