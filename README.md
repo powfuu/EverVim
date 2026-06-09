@@ -9,7 +9,7 @@
 
 <div align="center">
 
-**A modern, opinionated Neovim IDE — built by [Everit Jhon](https://github.com/everit-jhon)**
+**A modern, opinionated Neovim IDE — built by Everit Jhon**
 
 *Inspired by LazyVim & NvChad. Built to feel like VS Code. Works like Neovim should.*
 
@@ -280,6 +280,7 @@ On first launch, Lazy.nvim will install all plugins. Then Mason will prompt you 
 | Action | Keybinding |
 |--------|-----------|
 | Theme picker (live preview) | `Space+T+H` |
+| Toggle glass / transparency | `Space+G+H` |
 
 ---
 
@@ -314,6 +315,10 @@ EverVim ships with 90+ themes via NvChad's base46 engine.
 Default theme: **yoru** (deep dark, low contrast)
 
 Open the live picker with `Space+T+H` — changes apply instantly without restart.
+
+### Glass / Transparency Effect
+
+Use `Space+G+H` to toggle background transparency. This enables a **glass effect** that lets your terminal wallpaper or background show through — works with any theme.
 
 Some favorites included:
 `carbonfox` · `decay` · `midnight_breeze` · `onedark` · `pastelbeans` · `rxyhn` · `yoru`
