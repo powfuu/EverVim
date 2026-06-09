@@ -53,6 +53,8 @@ It sits on top of **NvChad v2.5** (which provides the theme engine, UI component
 
 On startup, EverVim greets you with a branded dashboard:
 
+![EverVim Dashboard](assets/dashboard.png)
+
 ```
 ███████╗██╗   ██╗███████╗██████╗ ██╗   ██╗██╗███╗   ███╗
 ██╔════╝██║   ██║██╔════╝██╔══██╗██║   ██║██║████╗ ████║
