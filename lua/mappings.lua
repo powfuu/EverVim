@@ -40,8 +40,15 @@ map({ "n", "i", "v" }, "<D-S-s>", function()
 end, { desc = "Save file (with format)" })
 
 -- Close buffer entirely (Shift+W)
-map("n", "<S-w>", "<cmd>bd<cr>", { desc = "Close buffer", noremap = true, silent = true, nowait = true })
-map("n", "<D-w>", "<cmd>bd<cr>", { desc = "Close buffer" })
+local function close_buf()
+  if vim.bo.buftype == "terminal" then
+    vim.cmd("bd!")
+  else
+    vim.cmd("bd")
+  end
+end
+map("n", "<S-w>", close_buf, { desc = "Close buffer", noremap = true, silent = true, nowait = true })
+map("n", "<D-w>", close_buf, { desc = "Close buffer" })
 
 -- Close split window only, keep buffer (leader+w)
 map("n", "<leader>w", "<cmd> close <cr>", { desc = "Close split window", nowait = true })
