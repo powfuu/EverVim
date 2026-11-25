@@ -195,6 +195,16 @@ return {
   {
     "nvim-tree/nvim-tree.lua",
     opts = {
+      -- ponytail: keep nvim-tree defaults + Shift-hjkl window nav inside the tree
+      on_attach = function(bufnr)
+        local api = require("nvim-tree.api")
+        api.config.mappings.default_on_attach(bufnr)
+        local o = { buffer = bufnr, noremap = true, silent = true }
+        vim.keymap.set("n", "<S-h>", "<C-w>h", o)
+        vim.keymap.set("n", "<S-j>", "<C-w>j", o)
+        vim.keymap.set("n", "<S-k>", "<C-w>k", o)
+        vim.keymap.set("n", "<S-l>", "<C-w>l", o)
+      end,
       view = {
         relativenumber = true,
       },
@@ -307,7 +317,7 @@ return {
           style = "rounded",
         },
         win_options = {
-          winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+          winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder",
         },
       },
     },

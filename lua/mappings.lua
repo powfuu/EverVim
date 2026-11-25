@@ -330,10 +330,17 @@ map("n", "<C-S-k>", "<cmd>leftabove split<cr>", { desc = "Split up" })
 map("n", "<C-S-l>", "<cmd>rightbelow vsplit<cr>", { desc = "Split right" })
 
 -- Tab Navigation (Ctrl + hjkl)
-map("n", "<C-h>", function() require("nvchad.tabufline").prev() end, { desc = "Prev Tab" })
-map("n", "<C-l>", function() require("nvchad.tabufline").next() end, { desc = "Next Tab" })
-map("n", "<C-j>", function() require("nvchad.tabufline").next() end, { desc = "Next Tab" })
-map("n", "<C-k>", function() require("nvchad.tabufline").prev() end, { desc = "Prev Tab" })
+-- ponytail: guard tabufline against single-buffer E5108 set_buf crash
+local function tab_move(dir)
+  return function()
+    if #vim.t.bufs < 2 then return end
+    require("nvchad.tabufline")[dir]()
+  end
+end
+map("n", "<C-h>", tab_move("prev"), { desc = "Prev Tab" })
+map("n", "<C-l>", tab_move("next"), { desc = "Next Tab" })
+map("n", "<C-j>", tab_move("next"), { desc = "Next Tab" })
+map("n", "<C-k>", tab_move("prev"), { desc = "Prev Tab" })
 
 -- Tab Navigation (Shift + Option + H/L) — legacy Mac keys
 map("n", "<A-S-l>", function() require("nvchad.tabufline").next() end, { desc = "Next Tab" })
