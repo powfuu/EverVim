@@ -1,4 +1,8 @@
 require("nvchad.configs.lspconfig").defaults()
+-- NvChad's defaults turn on lua_ls; same rule: only if it's installed.
+if vim.fn.executable("lua-language-server") == 0 then
+  vim.lsp.enable("lua_ls", false)
+end
 
 -- server → the program it needs. Only servers whose program is installed are started;
 -- otherwise every file of that type shows "language server … not installed / missing from
