@@ -9,7 +9,15 @@ local servers = {
   "yamlls",
   "ruby_lsp"
 }
-vim.lsp.enable(servers)
+-- Only start servers that are installed; otherwise every file of that type shows
+-- "language server ... not installed / missing from PATH" (e.g. vscode-json-language-server).
+-- Install one (npm, Mason…) and it's picked up on the next start.
+local installed = vim.tbl_filter(function(name)
+  local cfg = vim.lsp.config[name]
+  local cmd = cfg and cfg.cmd
+  return type(cmd) ~= "table" or vim.fn.executable(cmd[1]) == 1
+end, servers)
+vim.lsp.enable(installed)
 
 -- Cap LSP response sizes and disable expensive features on large files
 vim.lsp.config("*", {
