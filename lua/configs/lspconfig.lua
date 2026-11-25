@@ -1,22 +1,23 @@
 require("nvchad.configs.lspconfig").defaults()
 
+-- server → the program it needs. Only servers whose program is installed are started;
+-- otherwise every file of that type shows "language server … not installed / missing from
+-- PATH". Install one (npm, Mason…) and it's picked up the next time Neovim starts.
 local servers = {
-  "html",
-  "cssls",
-  "ts_ls",
-  "angularls",
-  "jsonls",
-  "yamlls",
-  "ruby_lsp"
+  html = "vscode-html-language-server",
+  cssls = "vscode-css-language-server",
+  ts_ls = "typescript-language-server",
+  angularls = "ngserver",
+  jsonls = "vscode-json-language-server",
+  yamlls = "yaml-language-server",
+  ruby_lsp = "ruby-lsp",
 }
--- Only start servers that are installed; otherwise every file of that type shows
--- "language server ... not installed / missing from PATH" (e.g. vscode-json-language-server).
--- Install one (npm, Mason…) and it's picked up on the next start.
-local installed = vim.tbl_filter(function(name)
-  local cfg = vim.lsp.config[name]
-  local cmd = cfg and cfg.cmd
-  return type(cmd) ~= "table" or vim.fn.executable(cmd[1]) == 1
-end, servers)
+local installed = {}
+for name, program in pairs(servers) do
+  if vim.fn.executable(program) == 1 then
+    table.insert(installed, name)
+  end
+end
 vim.lsp.enable(installed)
 
 -- Cap LSP response sizes and disable expensive features on large files
